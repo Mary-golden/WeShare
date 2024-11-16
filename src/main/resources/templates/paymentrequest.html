@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{/layout.html}">
+<head></head>
+<body>
+<div layout:fragment="contents">
+  <section class="expenseList">
+    <h2>Submit a payment request for the following expense</h2>
+    <table>
+      <tr>
+        <td>Date</td>
+        <td id="expense_date" th:text="${expense.getDate()}"></td>
+      </tr>
+      <tr>
+        <td>Description</td>
+        <td id="expense_description" th:text="${expense.getDescription()}"></td>
+      </tr>
+      <tr>
+        <td>Amount</td>
+        <td id="expense_amount" th:text="${expense.getAmount()}"></td>
+      </tr>
+    </table>
+
+    <section th:if="${!#lists.isEmpty(paymentRequestList)}">
+      <h2>Previous Payment Requests for this expense</h2>
+      <table>
+        <thead>
+        <tr>
+          <td>Who</td>
+          <td>Due</td>
+          <td>Paid?</td>
+          <td>How Much</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="paymentRequestItem : ${paymentRequestList}">
+          <td th:id="paymentrequest_who_+${paymentRequestItem.id}" th:text="${paymentRequestItem.getPersonWhoShouldPayBack.getName}"></td>
+          <td th:id="paymentrequest_date_+${paymentRequestItem.id}" th:text="${paymentRequestItem.dueDate}"></td>
+          <td th:id="paymentrequest_paid_+${paymentRequestItem.id}">
+            <span th:if="${paymentRequestItem.isPaid}">Yes</span>
+            <span th:unless="${paymentRequestItem.isPaid}">No</span>
+          </td>
+          <td th:id="paymentrequest_amount_+${paymentRequestItem.id}" th:text="${paymentRequestItem.amountToPay}"></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+          <td>Total Amount of Payments Requested</td>
+          <td colspan="2"></td>
+          <td id="total_paymentrequests" th:text="${grandTotal}"></td>
+        </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <form method="post" action="/paymentrequest.action" enctype="application/x-www-form-urlencoded">
+      <input name="expense_id" id="expense_id" th:value="${expense.id}" type="hidden">
+
+      <label for="email">The email address of the person that you should pay</label>
+      <input name="email" id="email" type="email" required>
+
+      <label for="amount">The amount they should pay (maximum ZAR 300.00!)</label>
+      <input name="amount" id="amount" type="number" required>
+
+      <label for="due_date">By when must this claim be settled (dd/mm/yyyy)</label>
+      <input name="due_date" id="due_date" type="date" required>
+
+      <input type="submit" value="Submit"/>
+    </form>
+  </section>
+</div>
+</body>
+</html>

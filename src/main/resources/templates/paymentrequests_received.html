@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{/layout.html}">
+<head>
+  <title>Payment Requests</title>
+</head>
+<body>
+<div layout:fragment="contents">
+  <section class="expenseList">
+    <h2>People that you owe</h2>
+    <p id="no_payment_requests_received" th:if="${#lists.isEmpty(paymentRequest)}">You don't owe anyone anything!</p>
+    <table th:unless="${#lists.isEmpty(paymentRequest)}">
+      <thead>
+      <tr>
+        <th>Who</th>
+        <th>What</th>
+        <th>Due in (days)</th>
+        <th>How Much</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="paymentRequest : ${paymentRequest}">
+        <td th:text="${paymentRequest.personRequestingPayment.name}"></td>
+        <td th:text="${paymentRequest.description}"></td>
+        <td th:text="${paymentRequest.daysLeftToPay}"></td>
+        <td th:text="${paymentRequest.amountToPay}"></td>
+        <td id="paid_1">
+          <form th:if="${!paymentRequest.isPaid}" action="payment.action" method="post">
+            <input type="hidden" name="paymentId" th:value="${paymentRequest.id}">
+            <input type="submit">Pay</input>
+          </form>
+          <span th:if="${paymentRequest.isPaid}">
+                                <input type="checkbox" checked disabled>
+                            </span>
+        </td>
+      </tr>
+      </tbody>
+      <tfoot>
+      <tr>
+        <td>Total Unpaid</td>
+        <td colspan="2"></td>
+        <td id="grand_total" th:text="${totalUnpaid}"></td>
+        <td></td>
+      </tr>
+      </tfoot>
+    </table>
+  </section>
+</div>
+</body>
+</html>
