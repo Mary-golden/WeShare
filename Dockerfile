@@ -1,14 +1,10 @@
-# FROM public.ecr.aws/docker/library/node:buster-slim
-# WORKDIR /usr/src/app
-# COPY package*.json ./
-# RUN npm install
-# COPY . .
-# EXPOSE 80
-# CMD ["node", "server.js"]
-
-FROM amazoncorretto:8
+FROM openjdk:17-jdk-slim
 WORKDIR /usr/src/app
-COPY . .
-RUN ./mvnw package
+
+
+RUN apt-get update && apt-get install -y maven
+RUN mvn clean install -DskipTests
+COPY target/WeShareServer.jar /usr/src/app/WeShareServer.jar
+
 EXPOSE 5050
-CMD ["java", "-jar", "target/WeShare-1.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "WeShareServer.jar"]
