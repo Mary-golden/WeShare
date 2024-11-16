@@ -7,4 +7,4 @@ RUN mvn clean install -DskipTests
 COPY target/WeShareServer.jar /usr/src/app/WeShareServer.jar
 
 EXPOSE 5050
-CMD ["java", "-jar", "WeShareServer.jar"]
+CMD ["java", "-cp", "target/classes:target/dependency/*", "weshare.server.WeShareServer"]
